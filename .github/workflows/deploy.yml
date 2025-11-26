@@ -55,8 +55,8 @@ jobs:
       - name: Deploy to Tomcat
         run: |
           curl -u "$TOMCAT_USER:$TOMCAT_PASS" \
-            --upload-file target/myapp.war \
-            "http://$TOMCAT_URL:8080/manager/text/deploy?path=/myapp&update=true"
+            --upload-file target/exploreProj.war \
+            "http://$TOMCAT_URL:8080/manager/text/deploy?path=/exploreProj&update=true"
         env:
           TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
           TOMCAT_PASS: ${{ secrets.TOMCAT_PASS }}
