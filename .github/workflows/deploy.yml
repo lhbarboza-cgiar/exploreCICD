@@ -61,5 +61,5 @@ jobs:
             "http://$TOMCAT_URL:8080/manager/text/deploy?path=/exploreProj&update=true"
         env:
           TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
-          TOMCAT_PASS: ${{ secrets.TOMCAT_PASS }}
+          TOMCAT_PASSWORD: ${{ secrets.TOMCAT_PASSWORD }}
           TOMCAT_URL: ${{ secrets.TOMCAT_URL }}
