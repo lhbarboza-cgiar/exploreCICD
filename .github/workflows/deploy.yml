@@ -1,0 +1,64 @@
+name: Simple Java CI/CD Pipeline
+
+# -------------------------------------------------------
+# 🟦 Trigger: Run this workflow whenever code is pushed
+#      OR when a pull request is made to the main branch.
+# -------------------------------------------------------
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-and-deploy:
+
+    # -------------------------------------------------------
+    # 🟩 Use your own self-hosted runner (Linux or Windows)
+    #     This machine must already be registered using
+    #     ./config.sh on your server or WSL.
+    # -------------------------------------------------------
+    runs-on: self-hosted
+
+    steps:
+
+      # -------------------------------------------------------
+      # 🟧 Step 1: Checkout the source code from GitHub
+      # -------------------------------------------------------
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # -------------------------------------------------------
+      # 🟨 Step 2: Set up Java 17 (or change to your version)
+      # -------------------------------------------------------
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      # -------------------------------------------------------
+      # 🟦 Step 3: Build your Java project using Maven
+      #           This will produce a .war file in target/
+      # -------------------------------------------------------
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
+
+      # -------------------------------------------------------
+      # 🟥 Step 4: Deploy to Tomcat
+      #
+      # Important:
+      #  - TOMCAT_USER and TOMCAT_PASS are stored in GitHub Secrets
+      #  - TOMCAT_URL is the IP or domain of your server
+      #
+      # This uploads the WAR file using Tomcat Manager API.
+      # -------------------------------------------------------
+      - name: Deploy to Tomcat
+        run: |
+          curl -u "$TOMCAT_USER:$TOMCAT_PASS" \
+            --upload-file target/myapp.war \
+            "http://$TOMCAT_URL:8080/manager/text/deploy?path=/myapp&update=true"
+        env:
+          TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
+          TOMCAT_PASS: ${{ secrets.TOMCAT_PASS }}
+          TOMCAT_URL: ${{ secrets.TOMCAT_URL }}
