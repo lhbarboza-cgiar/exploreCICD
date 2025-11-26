@@ -41,7 +41,8 @@ jobs:
       # 🟦 Step 3: Build your Java project using Maven
       #           This will produce a .war file in target/
       # -------------------------------------------------------
-  
+      - name: Build with Maven
+        run: mvn clean package
 
       # -------------------------------------------------------
       # 🟥 Step 4: Deploy to Tomcat
@@ -54,8 +55,9 @@ jobs:
       # -------------------------------------------------------
       - name: Deploy to Tomcat
         run: |
+          WAR_FILE=$(ls target/exploreProj-*.war | head -n 1)
           curl -u "$TOMCAT_USER:$TOMCAT_PASS" \
-            --upload-file target/exploreProj.war \
+            --upload-file "$WAR_FILE" \
             "http://$TOMCAT_URL:8080/manager/text/deploy?path=/exploreProj&update=true"
         env:
           TOMCAT_USER: ${{ secrets.TOMCAT_USER }}
