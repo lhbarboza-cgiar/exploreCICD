@@ -56,7 +56,7 @@ jobs:
       - name: Deploy to Tomcat
         run: |
           WAR_FILE=$(ls target/exploreProj-*.war | head -n 1)
-          curl -u "$TOMCAT_USER:$TOMCAT_PASS" \
+          curl -u "$TOMCAT_USER:$TOMCAT_PASSWORD" \
             --upload-file "$WAR_FILE" \
             "http://$TOMCAT_URL:8080/manager/text/deploy?path=/exploreProj&update=true"
         env:
